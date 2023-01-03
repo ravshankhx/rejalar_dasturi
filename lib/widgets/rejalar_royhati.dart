@@ -17,18 +17,34 @@ class RejalarRuyxati extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: rejalar.length>0 ? ListView.builder(
-        itemBuilder: (ctx, index) {
-          return Reja(
-            rejalar[index],
-            bajarilganDebBelgila,
-            rejaniUchirish,
-          );
-        },
-        itemCount: rejalar.length,
-      ):Center(
-        child: Text("Hozircha rejalar yo'q"),
-      ),
+      child: rejalar.length > 0
+          ? ListView.builder(
+              itemBuilder: (ctx, index) {
+                return Reja(
+                  rejalar[index],
+                  bajarilganDebBelgila,
+                  rejaniUchirish,
+                );
+              },
+              itemCount: rejalar.length,
+            )
+          : Column(
+        // mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Hozircha rejalar yo'q",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Image.asset(
+                  "assets/images/sleep.png",
+                  fit: BoxFit.cover,
+                  width: 150,
+                ),
+              ],
+            ),
     );
   }
 }
