@@ -17,7 +17,7 @@ class RejalarRuyxati extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView.builder(
+      child: rejalar.length>0 ? ListView.builder(
         itemBuilder: (ctx, index) {
           return Reja(
             rejalar[index],
@@ -26,6 +26,8 @@ class RejalarRuyxati extends StatelessWidget {
           );
         },
         itemCount: rejalar.length,
+      ):Center(
+        child: Text("Hozircha rejalar yo'q"),
       ),
     );
   }

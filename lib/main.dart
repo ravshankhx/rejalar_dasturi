@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:rejalar_dasturi/widgets/rejalar_malumoti.dart';
 import 'package:rejalar_dasturi/widgets/rejalar_royhati.dart';
 import 'package:rejalar_dasturi/widgets/rejalar_sanasi.dart';
+import 'package:rejalar_dasturi/widgets/yangi_reja.dart';
 
 import 'models/reja_modeli.dart';
 
@@ -26,12 +27,13 @@ class RejalarDasturi extends StatefulWidget {
 }
 
 class _RejalarDasturiState extends State<RejalarDasturi> {
-  List<RejaModeli> _rejalar = Rejalar().ruyxat;
+  // List<RejaModeli> _rejalar = Rejalar().ruyxat;
+
+  Rejalar _rejalar = Rejalar();
 
   DateTime _belgilanganKun = DateTime.now();
 
   void _sananiTanlash(BuildContext context) {
-
     showDatePicker(
             context: context,
             initialDate: DateTime.now(),
@@ -62,69 +64,51 @@ class _RejalarDasturiState extends State<RejalarDasturi> {
 
   void _bajarilganDebBelgila(String rejaId) {
     setState(() {
-      _rejalar.firstWhere((reja) => reja.id == rejaId).bajarildimiUzgartirish();
+      _rejalar.kunBoyichaRoyxat(_belgilanganKun)
+
+          .firstWhere((reja) => reja.id == rejaId)
+          .bajarildimiUzgartirish();
     });
   }
 
-
-  void _rejaniUchirish(String rejaId){
-
+  void _rejaniQoshish(String rejaNomi, DateTime rejaningKuni) {
     setState(() {
-      _rejalar.removeWhere((reja) => reja.id == rejaId);
-    });
-  }
-
-  int get _rejalarSoni{
-    return _rejalar.length;
-  }
-  int get _bajarilganRejalarSoni{
-    return _rejalar.where((reja) => reja.bajarildi).length;
-  }
-
-
-  void _rejaQoshishEkraniniOchish(BuildContext context){
-    showModalBottomSheet(context: context, builder: (ctx){
-      return Container(
-
-
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-               TextField(
-                 keyboardType: TextInputType.multiline,
-                maxLines: 5,
-
-                decoration: InputDecoration(
-
-                  labelText: "Reja nomi"
-                ),
-
-              ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Reja kuni tanlanmagan"),
-                TextButton(onPressed: (){}, child: Text("KUNNI TANLASH"))
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                TextButton(onPressed: (){}, child: Text("BEKOR QILISH"),),
-                ElevatedButton(onPressed: (){}, child: Text("KIRITISH"),)
-              ],
-            ),
-
-          ],
-        )
+      _rejalar.addTodo(
+        rejaNomi,
+        rejaningKuni,
       );
     });
+
+    Navigator.of(context).pop();
+  }
+
+  void _rejaniUchirish(String rejaId) {
+    setState(() {
+      _rejalar.removeTodo(rejaId);
+      // _rejalar.kunBoyichaRoyxat(_belgilanganKun).removeWhere((reja) => reja.id == rejaId);
+    });
+  }
+
+  int get _rejalarSoni {
+    return _rejalar.kunBoyichaRoyxat(_belgilanganKun).length;
+  }
+
+  int get _bajarilganRejalarSoni {
+    return _rejalar.kunBoyichaRoyxat(_belgilanganKun).where((reja) => reja.bajarildi).length;
+  }
+
+  void _rejaQoshishEkraniniOchish(BuildContext context) {
+    showModalBottomSheet(
+      isDismissible: false,
+        isScrollControlled: true,
+        context: context,
+        builder: (ctx) {
+          return YangiReja(_rejaniQoshish);
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -144,9 +128,9 @@ class _RejalarDasturiState extends State<RejalarDasturi> {
             _bajarilganRejalarSoni,
           ),
           RejalarRuyxati(
-            _rejalar,
+            _rejalar.kunBoyichaRoyxat(_belgilanganKun),
             _bajarilganDebBelgila,
-              _rejaniUchirish,
+            _rejaniUchirish,
           ),
         ],
       ),

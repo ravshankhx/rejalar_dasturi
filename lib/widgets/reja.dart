@@ -14,6 +14,7 @@ class Reja extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print(reja);
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 8),
       leading: IconButton(
